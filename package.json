@@ -23,7 +23,7 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && npm run tsc -p tsconfig.build.json",
+    "build": "rm -rf ./dist && tsc -p tsconfig.build.json",
     "test": "vitest --run --coverage",
     "test:debug": "vitest --run --no-file-parallelism --inspect-brk=0.0.0.0:9229",
     "test:watch": "vitest --watch",
