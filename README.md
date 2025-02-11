@@ -30,6 +30,7 @@ Environnement variables are optional, the tool will try to detect the repository
 | `CUSTOM_OUTPUT_PATH`     | Path to save the release notes               | `RELEASE_NOTES.md`         |
 | `CUSTOM_FROM_TAG`        | Starting tag for the release notes generation | *Auto-detected*            |
 | `CUSTOM_TO_TAG`          | Ending tag for the release notes generation  | *Latest tag*               |
+| `CUSTOM_WITH_TITLE`      | Include the release title in the output      | `true`                     |
 
 
 #### 🏗 Pull the image:
@@ -141,7 +142,6 @@ This tool supports the **Conventional Commits** specification to categorize comm
 
 ## 📋 Roadmap
 
-- [ ] **Without Title** – Allow users to generate release notes without a title.
 - [ ] **Case Sensitivity** – Support for case-insensitive commit types and messages.
 - [ ] **Customizable Templates** – Allow users to define custom release note templates.
 - [ ] **Angular Commit Style** – Support for Angular commit message style.

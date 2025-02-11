@@ -206,4 +206,34 @@ describe('generateReleaseNotes', () => {
       generateReleaseNotes({ ...baseConfig, tags: { from: 'v1.0.0', to: 'v1.99.0' } }),
     ).rejects.toThrow('Invalid tags provided or not enough valid tags to generate a release note.');
   });
+
+  it('should render without a title if `withTitle` is set to `false`', async () => {
+    vi.spyOn(mocks, 'tags').mockResolvedValue({
+      all: ['v1.0.0', 'v1.1.0'],
+      latest: 'v1.1.0',
+    });
+
+    vi.spyOn(mocks, 'show').mockResolvedValue('2024-02-10 00:00:00 +0000');
+
+    vi.spyOn(mocks, 'log').mockResolvedValue({
+      all: [
+        createCommit(
+          'feat: Add new login feature',
+          'Alice',
+          'alice@test.com',
+          '',
+          'abc1234tnhfkienfgdfgdf5445cg',
+        ),
+      ],
+    });
+
+    const result = await generateReleaseNotes({ ...baseConfig, withTitle: false });
+
+    expect(result).not.toContain(`# Release v1.1.0 (2024-02-10)`);
+    expect(result).toContain(
+      `- Add new login feature ([\`abc1234\`](#abc1234tnhfkienfgdfgdf5445cg)) [@Alice](#alice@test.com)`,
+    );
+
+    expect(result).toContain(`[v1.0.0...v1.1.0](#)`);
+  });
 });

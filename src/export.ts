@@ -23,4 +23,8 @@ exportReleaseNotes({
     process.env.CUSTOM_FROM_TAG && process.env.CUSTOM_TO_TAG
       ? { from: process.env.CUSTOM_FROM_TAG, to: process.env.CUSTOM_TO_TAG }
       : undefined,
+  withTitle: process.env.CUSTOM_WITH_TITLE
+    ? process.env.CUSTOM_WITH_TITLE.toLocaleLowerCase() === 'true' ||
+      process.env.CUSTOM_WITH_TITLE === '1'
+    : undefined,
 });

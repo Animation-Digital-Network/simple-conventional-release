@@ -238,7 +238,10 @@ export async function generateReleaseNotes(config: GenerateConfiguration): Promi
 
   const sections = categorizeCommits(logs);
 
-  let releaseNotes = `# Release ${toTag} (${releaseDate})\n\n`;
+  let releaseNotes =
+    config.withTitle === true || config.withTitle === undefined
+      ? `# Release ${toTag} (${releaseDate})\n\n`
+      : '';
 
   Object.entries(sections).forEach(([title, commits]) => {
     if (commits.length) {
