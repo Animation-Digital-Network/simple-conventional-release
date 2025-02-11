@@ -1,6 +1,6 @@
 {
   "name": "simple-conventional-release",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Simple automated release notes generator for Git repositories using Conventional Commits",
   "keywords": [
     "gitlab",
