@@ -34,7 +34,9 @@ jobs:
     permissions:
       contents: write
     if: needs.check_commit_message.outputs.is_release == 'true'
-
+    outputs:
+      VERSION_WITHOUT_V: ${{ steps.set_version.outputs.version_without_v }}
+      VERSION: ${{ steps.set_version.outputs.version }}
 
     steps:
       - name: Checkout Repository
@@ -70,7 +72,9 @@ jobs:
           fi
 
           echo "VERSION=$COMMIT_VERSION" >> $GITHUB_ENV
+          echo "version=$COMMIT_VERSION" >> $GITHUB_OUTPUT
           echo "VERSION_WITHOUT_V=${COMMIT_VERSION#v}" >> $GITHUB_ENV
+          echo "version_without_v=${VERSION#v}" >> $GITHUB_OUTPUT
 
       - name: Check if Version Matches package.json
         id: package_version
@@ -161,9 +165,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: |
             ghcr.io/${{ github.repository_owner }}/simple-conventional-release:latest
-            ghcr.io/${{ github.repository_owner }}/simple-conventional-release:${{ env.VERSION_WITHOUT_V }}
+            ghcr.io/${{ github.repository_owner }}/simple-conventional-release:${{ needs.release.outputs.VERSION_WITHOUT_V }}
           cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/simple-conventional-release:buildcache
           cache-to: type=inline
 
       - name: Image Build Successful
-        run: echo "🚀 Docker image pushed successfully to GHCR with version ${{ env.VERSION_WITHOUT_V }}!"
+        run: echo "🚀 Docker image pushed successfully to GHCR with version ${{ needs.release.outputs.VERSION_WITHOUT_V }}!"
