@@ -222,13 +222,13 @@ export async function generateReleaseNotes(config: GenerateConfiguration): Promi
   // Get release date from `toTag`
   const releaseDate = await getTagDate(git, toTag);
 
-  console.log(
-    `📌 Generating release notes from ${fromTag ?? 'initial commit'} to ${toTag} (Release Date: ${releaseDate})`,
-  );
-
   if (!fromTag) {
     logParams.from = (await git.log({})).all.at(-1)?.hash;
   }
+
+  console.log(
+    `📌 Generating release notes from ${fromTag ?? `initial commit (${logParams.from})`} to ${toTag} (Release Date: ${releaseDate})`,
+  );
 
   const logs = await git.log(logParams);
 
