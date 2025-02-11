@@ -31,6 +31,8 @@ jobs:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     needs: [check_commit_message]
+    permissions:
+      contents: write
     if: needs.check_commit_message.outputs.is_release == 'true'
 
 
