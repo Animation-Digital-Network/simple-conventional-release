@@ -37,7 +37,7 @@ This project follows **Conventional Commits**. Please use the following format f
 ### Example:
 ```sh
 feat(api): add support for custom release notes
-fix(ci): resolve issue with Docker build
+fix(ci): resolve issue with typescript build
 ```
 
 ### **Allowed Types**:

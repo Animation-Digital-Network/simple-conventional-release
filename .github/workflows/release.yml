@@ -54,7 +54,7 @@ jobs:
         run: npm install
 
       - name: Extract Version from Commit and Validate SemVer
-        id: set_version  # <-- ID utilisé pour les outputs
+        id: set_version
         run: |
           COMMIT_VERSION=$(git log -1 --pretty=format:"%s" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?')
 
@@ -92,9 +92,7 @@ jobs:
           git push origin ${{ env.VERSION }}
 
       - name: Generate Release Notes
-        run: npx tsx src/export.ts  # Generates RELEASE_NOTES.md
-        env:
-          CUSTOM_WITH_TITLE: "false"
+        run: npx tsx src/cli.ts --with-title false # Generates RELEASE_NOTES.md
 
       - name: Check if Pre-release
         id: prerelease
@@ -140,41 +138,3 @@ jobs:
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  build-and-push-ghcr:
-    name: Build & Push to GitHub Container Registry
-    runs-on: ubuntu-latest
-    needs: [release]
-    permissions:
-      packages: write
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Validate Version Before Docker Build
-        run: |
-          if [[ -z "${{ needs.release.outputs.VERSION_WITHOUT_V }}" ]]; then
-            echo "❌ Docker tag is empty. Exiting."
-            exit 1
-          fi
-
-      - name: Build & Push Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/simple-conventional-release:latest
-            ghcr.io/${{ github.repository_owner }}/simple-conventional-release:${{ needs.release.outputs.VERSION_WITHOUT_V }}
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/simple-conventional-release:buildcache
-          cache-to: type=inline
-
-      - name: Image Build Successful
-        run: echo "🚀 Docker image pushed successfully to GHCR with version ${{ needs.release.outputs.VERSION_WITHOUT_V }}!"
