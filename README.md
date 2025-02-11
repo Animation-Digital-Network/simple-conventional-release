@@ -139,6 +139,15 @@ This tool supports the **Conventional Commits** specification to categorize comm
 | `style`    | Code style changes (formatting, whitespace, etc.)   |
 | `test`     | Adding or updating tests                            |
 
+## 📋 Roadmap
+
+- [ ] **Without Title** – Allow users to generate release notes without a title.
+- [ ] **Case Sensitivity** – Support for case-insensitive commit types and messages.
+- [ ] **Customizable Templates** – Allow users to define custom release note templates.
+- [ ] **Angular Commit Style** – Support for Angular commit message style.
+- [ ] **Customizable Categories** – Allow users to define custom commit categories.
+- [ ] **Full Generation** – Generate full release notes with all tags.
+
 ## 📝 License
 
 This project is licensed under the **AGPL-3.0** License. See the [LICENSE](https://github.com/animation-digital-network/simple-conventional-release/blob/main/LICENSE) file for details.
