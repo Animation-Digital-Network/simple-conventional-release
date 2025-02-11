@@ -1,16 +1,38 @@
 name: Auto Release
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
     branches:
       - main
 
 jobs:
+  check_commit_message:
+    runs-on: ubuntu-latest
+    outputs:
+      is_release: ${{ steps.check.outputs.is_release }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Get Commit Message
+        id: check
+        run: |
+          COMMIT_MESSAGE=$(git log -1 --pretty=format:"%s")
+          if [[ "$COMMIT_MESSAGE" =~ ^chore:\ release\ v[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ ]]; then
+            echo "is_release=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_release=false" >> $GITHUB_OUTPUT
+          fi
+
   release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
-    needs: [checks]  # Ensure CI has passed before running the release
-    if: startsWith(github.event.head_commit.message, 'chore: release v')
+    needs: [check_commit_message]
+    if: needs.check_commit_message.outputs.is_release == 'true'
+
 
     steps:
       - name: Checkout Repository
@@ -28,7 +50,14 @@ jobs:
       - name: Extract Version from Commit and Validate SemVer
         id: version
         run: |
-          COMMIT_VERSION=$(echo '${{ github.event.head_commit.message }}' | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?')
+          COMMIT_VERSION=$(git log -1 --pretty=format:"%s" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?')
+
+          if [[ -z "$COMMIT_VERSION" ]]; then
+            echo "❌ Invalid SemVer version in commit message"
+            exit 1
+          fi
+
+          echo "VERSION=$COMMIT_VERSION" >> $GITHUB_ENV
 
           # Ensure the version is valid SemVer
           if [[ -z "$COMMIT_VERSION" ]]; then
@@ -53,6 +82,15 @@ jobs:
       - name: Generate Release Notes
         run: tsx src/main.ts  # Generates RELEASE_NOTES.md
 
+      - name: Check if Pre-release
+        id: prerelease
+        run: |
+          if [[ "${{ env.VERSION }}" == *"-rc"* ]]; then
+            echo "IS_PRERELEASE=true" >> $GITHUB_ENV
+          else
+            echo "IS_PRERELEASE=false" >> $GITHUB_ENV
+          fi
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -60,7 +98,7 @@ jobs:
           name: Release ${{ env.VERSION }}
           body_path: RELEASE_NOTES.md
           draft: false
-          prerelease: contains(env.VERSION, '-rc')
+          prerelease: ${{ env.IS_PRERELEASE == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
