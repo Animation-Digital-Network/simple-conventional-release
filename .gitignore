@@ -24,3 +24,6 @@ dist/
 
 # Any private notes
 *.notes
+
+# Release notes
+RELEASE_NOTES.md

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SimpleGit } from 'simple-git';
 import { generateReleaseNotes } from '../../src/generate-release.service';
 import { GenerateConfiguration } from '../../src/types/generate-configuration.type';
+import { createCommit } from '../helpers/create-commit.helper';
 
 // Define hoisted mocks
 const mocks = vi.hoisted(() => ({
@@ -41,17 +42,32 @@ describe('generateReleaseNotes', () => {
 
     vi.spyOn(mocks, 'log').mockResolvedValue({
       all: [
-        { hash: 'abc1234', message: 'feat: Add new login feature', author_name: 'Alice', body: '' },
-        { hash: 'def5678', message: 'fix(ui): Fix layout issue', author_name: 'Bob', body: '' },
+        createCommit(
+          'feat: Add new login feature',
+          'Alice',
+          'alice@test.com',
+          '',
+          'abc1234tnhfkienfgdfgdf5445cg',
+        ),
+        createCommit(
+          'fix(ui): Fix layout issue',
+          'Bob',
+          'bob@test.com',
+          '',
+          'def5678tnhfkienfgdfgdf5445cg',
+        ),
       ],
     });
 
     const result = await generateReleaseNotes(baseConfig);
 
-    expect(result).toContain(`# 🚀 Release v1.1.0`);
-    expect(result).toContain(`## 📅 Date: 2024-02-10`);
-    expect(result).toContain(`- Add new login feature ([\`abc1234\`](#abc1234)) @Alice`);
-    expect(result).toContain(`- **ui** Fix layout issue ([\`def5678\`](#def5678)) @Bob`);
+    expect(result).toContain(`# Release v1.1.0 (2024-02-10)`);
+    expect(result).toContain(
+      `- Add new login feature ([\`abc1234\`](#abc1234tnhfkienfgdfgdf5445cg)) [@Alice](#alice@test.com)`,
+    );
+    expect(result).toContain(
+      `- **ui** Fix layout issue ([\`def5678\`](#def5678tnhfkienfgdfgdf5445cg)) [@Bob](#bob@test.com)`,
+    );
     expect(result).toContain(`[v1.0.0...v1.1.0](#)`);
   });
 
@@ -64,14 +80,17 @@ describe('generateReleaseNotes', () => {
     vi.spyOn(mocks, 'show').mockResolvedValue('2024-02-09 00:00:00 +0000');
 
     vi.spyOn(mocks, 'log').mockResolvedValue({
-      all: [{ hash: 'abc5678', message: 'chore: Initial release', author_name: 'John', body: '' }],
+      all: [
+        createCommit('chore: Initial release', 'John', 'john@test.com', '', 'abc5678sdgsd441165cg'),
+      ],
     });
 
     const result = await generateReleaseNotes(baseConfig);
 
-    expect(result).toContain(`# 🚀 Release v1.0.0`);
-    expect(result).toContain(`## 📅 Date: 2024-02-09`);
-    expect(result).toContain(`- Initial release ([\`abc5678\`](#abc5678)) @John`);
+    expect(result).toContain(`# Release v1.0.0 (2024-02-09)`);
+    expect(result).toContain(
+      `- Initial release ([\`abc5678\`](#abc5678sdgsd441165cg)) [@John](#john@test.com)`,
+    );
     expect(result).toContain(`## 🔗 Full Changelog`);
   });
 
@@ -110,12 +129,13 @@ describe('generateReleaseNotes', () => {
 
     vi.spyOn(mocks, 'log').mockResolvedValue({
       all: [
-        {
-          hash: 'ghi9012',
-          message: 'feat: Refactor API',
-          author_name: 'Charlie',
-          body: 'BREAKING CHANGE: The API structure has been completely overhauled.',
-        },
+        createCommit(
+          'feat: Refactor API',
+          'Charlie',
+          'charlie@test.com',
+          'BREAKING CHANGE: The API structure has been completely overhauled.',
+          'ghi9012tsbfhtyrthg852',
+        ),
       ],
     });
 
@@ -123,7 +143,7 @@ describe('generateReleaseNotes', () => {
 
     expect(result).toContain('## 💥 BREAKING CHANGES');
     expect(result).toContain(
-      '- The API structure has been completely overhauled. ([`ghi9012`](#ghi9012)) @Charlie',
+      '- The API structure has been completely overhauled. ([`ghi9012`](#ghi9012tsbfhtyrthg852)) [@Charlie](#charlie@test.com)',
     );
   });
 
@@ -138,7 +158,7 @@ describe('generateReleaseNotes', () => {
     vi.spyOn(mocks, 'show').mockResolvedValue('2024-02-10 00:00:00 +0000');
 
     vi.spyOn(mocks, 'log').mockResolvedValue({
-      all: [{ hash: 'jkl3456', message: 'docs: Update README', author_name: 'Eve', body: '' }],
+      all: [createCommit('docs: Update README', 'Eve', 'eve@test.com', '', 'jkl3456sdgsd441165cg')],
     });
 
     const result = await generateReleaseNotes(baseConfig);
@@ -160,7 +180,13 @@ describe('generateReleaseNotes', () => {
 
     vi.spyOn(mocks, 'log').mockResolvedValue({
       all: [
-        { hash: 'mno7890', message: 'ci: Improve pipeline speed', author_name: 'Frank', body: '' },
+        createCommit(
+          'ci: Improve pipeline speed',
+          'Frank',
+          'frank@test.com',
+          '',
+          'mno7890fdsgdfs4545115',
+        ),
       ],
     });
 

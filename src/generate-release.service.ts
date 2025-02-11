@@ -37,7 +37,7 @@ export async function getValidTags(git: SimpleGit): Promise<{ fromTag?: string; 
     return { toTag: tags[0] };
   }
 
-  const lastTag = tags[tags.length - 1]; // ✅ Correctement trié
+  const lastTag = tags[tags.length - 1];
   const prevTag = tags[tags.length - 2];
 
   if (lastTag && lastTag.includes('-rc')) {
@@ -104,82 +104,89 @@ export function categorizeCommits(logs: LogResult): CommitSections {
     [CommitCategory.UNSPECIFIED]: [],
   };
 
-  const breakingChanges: string[] = [];
-
   const ciProjectUrl = process.env.GITHUB_REPOSITORY
     ? `https://github.com/${process.env.GITHUB_REPOSITORY}`
     : process.env.CI_PROJECT_URL;
 
-  logs.all.forEach(({ message, author_name: authorName, hash, body }) => {
-    // Extract commit type, scope, and description
-    const match = message.match(
-      new RegExp(`^(${ALLOWED_PREFIXES.join('|')})(\\(([^)]+)\\))?:\\s?(.*)$`),
-    );
+  logs.all.forEach(
+    ({ message, author_name: authorName, author_email: authorEmail, hash, body }) => {
+      // Extract commit type, scope, and description
+      const match = message.match(
+        new RegExp(`^(${ALLOWED_PREFIXES.join('|')})(?:\\(([^)]+)\\))?(!)?:\\s?(.*)$`),
+      );
 
-    const shortHash = hash ? hash.substring(0, 7) : ''; // Get first 7 chars of hash
-    const commitUrl = ciProjectUrl ? `${ciProjectUrl}/commit/${hash}` : `#${hash}`;
+      const shortHash = hash ? hash.substring(0, 7) : ''; // Get first 7 chars of hash
+      const commitUrl = ciProjectUrl ? `${ciProjectUrl}/commit/${hash}` : `#${hash}`;
+      const authorUrl = ciProjectUrl
+        ? `${ciProjectUrl}/commits?author=${authorEmail}`
+        : `#${authorEmail}`;
 
-    let formattedMessage: string;
-    if (match) {
-      const [, type, , scope, description] = match;
-      formattedMessage = `- ${scope ? `**${scope}** ` : ''}${description?.trim() || 'no description'} ([\`${shortHash}\`](${commitUrl})) @${authorName}`;
+      let breakingChange: string | undefined;
 
-      switch (type) {
-        case 'feat':
-          sections[CommitCategory.FEATURES].push(formattedMessage);
-          break;
-        case 'fix':
-          sections[CommitCategory.BUG_FIXES].push(formattedMessage);
-          break;
-        case 'refactor':
-          sections[CommitCategory.REFACTORS].push(formattedMessage);
-          break;
-        case 'perf':
-          sections[CommitCategory.PERFORMANCE].push(formattedMessage);
-          break;
-        case 'docs':
-          sections[CommitCategory.DOCUMENTATION].push(formattedMessage);
-          break;
-        case 'test':
-          sections[CommitCategory.TESTS].push(formattedMessage);
-          break;
-        case 'build':
-          sections[CommitCategory.BUILD].push(formattedMessage);
-          break;
-        case 'ci':
-          sections[CommitCategory.CI].push(formattedMessage);
-          break;
-        case 'style':
-          sections[CommitCategory.STYLING].push(formattedMessage);
-          break;
-        case 'chore':
-          sections[CommitCategory.CHORES].push(formattedMessage);
-          break;
-        case 'revert':
-          sections[CommitCategory.REVERTS].push(formattedMessage);
-          break;
-        default:
-          sections[CommitCategory.UNSPECIFIED].push(formattedMessage);
+      let formattedMessage: string;
+      if (match) {
+        const [, type, scope, isBreaking, description] = match;
+        formattedMessage = `- ${scope ? `**${scope}** ` : ''}${description?.trim() || 'no description'} ([\`${shortHash}\`](${commitUrl})) [@${authorName}](${authorUrl})`;
+
+        switch (type) {
+          case 'feat':
+            sections[CommitCategory.FEATURES].push(formattedMessage);
+            break;
+          case 'fix':
+            sections[CommitCategory.BUG_FIXES].push(formattedMessage);
+            break;
+          case 'refactor':
+            sections[CommitCategory.REFACTORS].push(formattedMessage);
+            break;
+          case 'perf':
+            sections[CommitCategory.PERFORMANCE].push(formattedMessage);
+            break;
+          case 'docs':
+            sections[CommitCategory.DOCUMENTATION].push(formattedMessage);
+            break;
+          case 'test':
+            sections[CommitCategory.TESTS].push(formattedMessage);
+            break;
+          case 'build':
+            sections[CommitCategory.BUILD].push(formattedMessage);
+            break;
+          case 'ci':
+            sections[CommitCategory.CI].push(formattedMessage);
+            break;
+          case 'style':
+            sections[CommitCategory.STYLING].push(formattedMessage);
+            break;
+          case 'chore':
+            sections[CommitCategory.CHORES].push(formattedMessage);
+            break;
+          case 'revert':
+            sections[CommitCategory.REVERTS].push(formattedMessage);
+            break;
+          default:
+            sections[CommitCategory.UNSPECIFIED].push(formattedMessage);
+        }
+
+        // 🔥 If commit contains `!`, also add it to BREAKING CHANGES
+        if (isBreaking) {
+          breakingChange = formattedMessage;
+        }
+      } else {
+        sections[CommitCategory.UNSPECIFIED].push(
+          `- ${message.trim()} ([\`${shortHash}\`](${commitUrl})) [@${authorName}](${authorUrl})`,
+        );
       }
-    } else {
-      sections[CommitCategory.UNSPECIFIED].push(
-        `- ${message.trim()} ([\`${shortHash}\`](${commitUrl})) @${authorName}`,
-      );
-    }
 
-    // 💥 Detect BREAKING CHANGES in commit body
-    if (body.includes('BREAKING CHANGE:')) {
-      const breakingMessage = body.split('BREAKING CHANGE:')[1]?.trim() || 'No details provided';
-      breakingChanges.push(
-        `- ${breakingMessage} ([\`${shortHash}\`](${commitUrl})) @${authorName}`,
-      );
-    }
-  });
+      // 💥 Detect BREAKING CHANGES in commit body
+      if (body.includes('BREAKING CHANGE:')) {
+        const breakingMessage = body.split('BREAKING CHANGE:')[1]?.trim() || 'No details provided';
+        breakingChange = `- ${breakingMessage} ([\`${shortHash}\`](${commitUrl})) [@${authorName}](${authorUrl})`;
+      }
 
-  // If there are breaking changes, add them as a new section
-  if (breakingChanges.length) {
-    sections[CommitCategory.BREAKING_CHANGES] = breakingChanges;
-  }
+      if (breakingChange) {
+        sections[CommitCategory.BREAKING_CHANGES].push(breakingChange);
+      }
+    },
+  );
 
   return sections;
 }
@@ -219,6 +226,10 @@ export async function generateReleaseNotes(config: GenerateConfiguration): Promi
     `📌 Generating release notes from ${fromTag ?? 'initial commit'} to ${toTag} (Release Date: ${releaseDate})`,
   );
 
+  if (!fromTag) {
+    logParams.from = (await git.log({})).all.at(-1)?.hash;
+  }
+
   const logs = await git.log(logParams);
 
   if (logs.all.length === 0) {
@@ -227,8 +238,7 @@ export async function generateReleaseNotes(config: GenerateConfiguration): Promi
 
   const sections = categorizeCommits(logs);
 
-  let releaseNotes = `# 🚀 Release ${toTag}\n\n`;
-  releaseNotes += `## 📅 Date: ${releaseDate}\n\n`;
+  let releaseNotes = `# Release ${toTag} (${releaseDate})\n\n`;
 
   Object.entries(sections).forEach(([title, commits]) => {
     if (commits.length) {
