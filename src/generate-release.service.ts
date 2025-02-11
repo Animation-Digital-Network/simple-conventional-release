@@ -252,9 +252,9 @@ export async function generateReleaseNotes(config: GenerateConfiguration): Promi
 
   if (ciProjectUrl) {
     if (process.env.GITHUB_REPOSITORY) {
-      changelogUrl = `https://github.com/${ciProjectUrl}/compare/${fromTag ?? ''}...${toTag}`;
+      changelogUrl = `https://github.com/${ciProjectUrl}/compare/${logParams.from}...${toTag}`;
     } else if (process.env.CI_PROJECT_URL) {
-      changelogUrl = `${ciProjectUrl}/-/compare/${fromTag ?? ''}...${toTag}`;
+      changelogUrl = `${ciProjectUrl}/-/compare/${logParams.from}...${toTag}`;
     }
   }
 
