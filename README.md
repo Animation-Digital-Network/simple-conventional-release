@@ -60,14 +60,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Generate Release Notes
+        env:
+          CUSTOM_OUTPUT_PATH: RELEASE_NOTES.md
+          CUSTOM_WITH_TITLE: "false"
         run: |
-          docker run --rm \
-            -e CUSTOM_REPOSITORY_PATH=/repo \
-            -e CUSTOM_OUTPUT_PATH=RELEASE_NOTES.md \
-            -e CUSTOM_FROM_TAG=v1.0.0 \
-            -e CUSTOM_TO_TAG=v1.1.0 \
-            -v $(pwd):/repo \
-            ghcr.io/animation-digital-network/simple-conventional-release
+          echo "Running simple-conventional-release..."
 
       - name: Upload Release Notes
         uses: actions/upload-artifact@v4
@@ -82,22 +79,13 @@ jobs:
 release-notes:
   image: ghcr.io/animation-digital-network/simple-conventional-release:latest
   variables:
-    CUSTOM_REPOSITORY_PATH: "/repo"
     CUSTOM_OUTPUT_PATH: "RELEASE_NOTES.md"
-    CUSTOM_FROM_TAG: "v1.0.0"
-    CUSTOM_TO_TAG: "v1.1.0"
+    CUSTOM_WITH_TITLE: "false"
   script:
-    - docker run --rm \
-        -e CUSTOM_REPOSITORY_PATH=$CUSTOM_REPOSITORY_PATH \
-        -e CUSTOM_OUTPUT_PATH=$CUSTOM_OUTPUT_PATH \
-        -e CUSTOM_FROM_TAG=$CUSTOM_FROM_TAG \
-        -e CUSTOM_TO_TAG=$CUSTOM_TO_TAG \
-        -v $CI_PROJECT_DIR:/repo \
-        ghcr.io/animation-digital-network/simple-conventional-release
+    - echo "Running simple-conventional-release..."
   artifacts:
     paths:
       - RELEASE_NOTES.md
-    expire_in: 1 week
 ```
 
 ### 📜 Using the JavaScript API
