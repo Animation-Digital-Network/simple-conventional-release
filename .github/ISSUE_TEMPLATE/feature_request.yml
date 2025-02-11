@@ -1,0 +1,41 @@
+name: 🚀 Feature Request
+description: Suggest a new feature or improvement for simple-conventional-release.
+title: "[Feature] "
+labels: ["enhancement", "discussion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please fill out the details below.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: ✨ Feature Description
+      description: A clear and concise description of the feature request.
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: 💡 Motivation
+      description: Why is this feature needed? What problem does it solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 🔄 Suggested Solution
+      description: If you have an idea of how to implement it, describe it here.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 Alternatives
+      description: Have you considered any alternatives? If so, explain them here.
+    validations:
+      required: false

@@ -1,0 +1,65 @@
+{
+  "name": "simple-conventional-release",
+  "version": "1.0.0",
+  "description": "Simple automated release notes generator for Git repositories using Conventional Commits",
+  "keywords": [
+    "gitlab",
+    "automated",
+    "release"
+  ],
+  "homepage": "https://github.com/Animation-Digital-Network/simple-conventional-release#readme",
+  "bugs": {
+    "url": "https://github.com/Animation-Digital-Network/simple-conventional-release/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Animation-Digital-Network/simple-conventional-release.git"
+  },
+  "license": "AGPL-3.0",
+  "author": "ADN Team",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "rm -rf ./dist && npm run tsc -p tsconfig.build.json",
+    "test": "vitest --run --coverage",
+    "test:debug": "vitest --run --no-file-parallelism --inspect-brk=0.0.0.0:9229",
+    "test:watch": "vitest --watch",
+    "test:watch:debug": "vitest --watch --no-file-parallelism --inspect-brk=0.0.0.0:9229",
+    "lint": "eslint \"{src,tests}/**/*.ts\"",
+    "lint:fix": "eslint \"{src,tests}/**/*.ts\" --fix",
+    "prepare": "husky",
+    "pre-commit": "lint-staged",
+    "typecheck": "tsc --project tsconfig.json --noEmit --pretty false"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
+    "@eslint/js": "^9.20.0",
+    "@faker-js/faker": "^9.4.0",
+    "@stylistic/eslint-plugin": "^3.1.0",
+    "@total-typescript/ts-reset": "^0.6.1",
+    "@types/node": "^22.13.1",
+    "@types/semver": "^7.5.8",
+    "@typescript-eslint/parser": "^8.23.0",
+    "@vitest/coverage-v8": "^3.0.5",
+    "eslint": "^9.20.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-check-file": "^3.0.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
+    "prettier": "^3.5.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.23.0",
+    "vitest": "^3.0.5"
+  },
+  "dependencies": {
+    "semver": "^7.7.1",
+    "simple-git": "^3.27.0"
+  }
+}

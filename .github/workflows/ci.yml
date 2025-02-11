@@ -1,0 +1,36 @@
+name: CI Pipeline
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    name: Run Lint, Type Check, Tests, and Commit Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Type Checking
+        run: npm run typecheck
+
+      - name: Run Tests
+        run: npm run test
+
+      - name: Check Commit Messages with Commitlint
+        run: |
+          npx commitlint --from=origin/main
