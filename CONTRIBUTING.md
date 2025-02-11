@@ -90,7 +90,7 @@ Once you're done making changes:
 
 ## 💡 Submitting Issues
 
-If you found a bug or have a feature request, please [open an issue](https://github.com/Animation-Digital-Network/simple-conventional-release/issues) with the following information:
+If you found a bug or have a feature request, please [open an issue](https://github.com/animation-digital-network/simple-conventional-release/issues) with the following information:
 
 - **Description**: A clear explanation of the issue or feature request.
 - **Steps to Reproduce**: If applicable, provide step-by-step instructions.

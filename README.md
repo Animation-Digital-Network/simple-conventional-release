@@ -1,8 +1,8 @@
 # 🚀 simple-conventional-release
 
-[![CI Pipeline](https://github.com/Animation-Digital-Network/simple-conventional-release/actions/workflows/ci.yml/badge.svg)](https://github.com/Animation-Digital-Network/simple-conventional-release/actions)
+[![CI Pipeline](https://github.com/animation-digital-network/simple-conventional-release/actions/workflows/ci.yml/badge.svg)](https://github.com/animation-digital-network/simple-conventional-release/actions)
 [![NPM Version](https://img.shields.io/npm/v/simple-conventional-release)](https://www.npmjs.com/package/simple-conventional-release)
-[![License](https://img.shields.io/github/license/Animation-Digital-Network/simple-conventional-release)](https://github.com/Animation-Digital-Network/simple-conventional-release/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/animation-digital-network/simple-conventional-release)](https://github.com/animation-digital-network/simple-conventional-release/blob/main/LICENSE)
 
 A **simple automated release notes generator** for Git repositories using **Conventional Commits**.
 
@@ -141,12 +141,12 @@ This tool supports the **Conventional Commits** specification to categorize comm
 
 ## 📝 License
 
-This project is licensed under the **AGPL-3.0** License. See the [LICENSE](https://github.com/Animation-Digital-Network/simple-conventional-release/blob/main/LICENSE) file for details.
+This project is licensed under the **AGPL-3.0** License. See the [LICENSE](https://github.com/animation-digital-network/simple-conventional-release/blob/main/LICENSE) file for details.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow the [contribution guidelines](https://github.com/Animation-Digital-Network/simple-conventional-release/blob/main/CONTRIBUTING.md).
+Contributions are welcome! Please follow the [contribution guidelines](https://github.com/animation-digital-network/simple-conventional-release/blob/main/CONTRIBUTING.md).
 
 ## 📬 Issues & Feedback
 
-If you encounter any issues, feel free to report them on our [GitHub Issues](https://github.com/Animation-Digital-Network/simple-conventional-release/issues).
+If you encounter any issues, feel free to report them on our [GitHub Issues](https://github.com/animation-digital-network/simple-conventional-release/issues).

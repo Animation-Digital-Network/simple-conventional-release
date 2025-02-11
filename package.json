@@ -7,13 +7,13 @@
     "automated",
     "release"
   ],
-  "homepage": "https://github.com/Animation-Digital-Network/simple-conventional-release#readme",
+  "homepage": "https://github.com/animation-digital-Network/simple-conventional-release#readme",
   "bugs": {
-    "url": "https://github.com/Animation-Digital-Network/simple-conventional-release/issues"
+    "url": "https://github.com/animation-digital-network/simple-conventional-release/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/Animation-Digital-Network/simple-conventional-release.git"
+    "url": "git+ssh://git@github.com/animation-digital-network/simple-conventional-release.git"
   },
   "license": "AGPL-3.0",
   "author": "ADN Team",
