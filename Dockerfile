@@ -19,6 +19,9 @@ RUN npm run build
 # ---- Runtime Stage ----
 FROM node:22-alpine AS runtime
 
+# Set the custom repository path
+ENV CUSTOM_REPOSITORY_PATH="/app/repository"
+
 # Set working directory
 WORKDIR /app
 
@@ -29,6 +32,12 @@ RUN apk add --no-cache git
 COPY --from=build /app/package.json /app/package-lock.json ./
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/dist /app/dist
+
+# Create a directory for the repository
+RUN mkdir /app/repository
+
+# Set the default directory for safe
+RUN git config --global --add safe.directory /app/repository
 
 # Install only production dependencies (optional)
 RUN npm prune --production
