@@ -80,6 +80,13 @@ jobs:
 
           echo "✅ Version match confirmed: $PACKAGE_VERSION"
 
+      - name: Create Git Tag
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ env.VERSION }}
+          git push origin ${{ env.VERSION }}
+
       - name: Generate Release Notes
         run: npx tsx src/export.ts  # Generates RELEASE_NOTES.md
 
