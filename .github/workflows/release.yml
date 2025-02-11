@@ -81,7 +81,7 @@ jobs:
           echo "✅ Version match confirmed: $PACKAGE_VERSION"
 
       - name: Generate Release Notes
-        run: tsx src/main.ts  # Generates RELEASE_NOTES.md
+        run: npx tsx src/export.ts  # Generates RELEASE_NOTES.md
 
       - name: Check if Pre-release
         id: prerelease
