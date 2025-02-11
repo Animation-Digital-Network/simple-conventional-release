@@ -22,6 +22,9 @@ FROM node:22-alpine AS runtime
 # Set working directory
 WORKDIR /app
 
+# Install git
+RUN apk add --no-cache git
+
 # Copy only the necessary files from the build stage
 COPY --from=build /app/package.json /app/package-lock.json ./
 COPY --from=build /app/node_modules /app/node_modules
