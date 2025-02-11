@@ -66,14 +66,15 @@ jobs:
           fi
 
           echo "VERSION=$COMMIT_VERSION" >> $GITHUB_ENV
+          echo "VERSION_WITHOUT_V=${COMMIT_VERSION#v}" >> $GITHUB_ENV
 
       - name: Check if Version Matches package.json
         id: package_version
         run: |
           PACKAGE_VERSION=$(node -p 'require("./package.json").version')
 
-          if [[ "$PACKAGE_VERSION" != "${{ env.VERSION }}" ]]; then
-            echo "❌ Version mismatch: Commit version (${{ env.VERSION }}) does not match package.json version ($PACKAGE_VERSION)"
+          if [[ "$PACKAGE_VERSION" != "${{ env.VERSION_WITHOUT_V }}" ]]; then
+            echo "❌ Version mismatch: Commit version (${{ env.VERSION_WITHOUT_V }}) does not match package.json version ($PACKAGE_VERSION)"
             exit 1
           fi
 
@@ -149,9 +150,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: |
             ghcr.io/${{ github.repository_owner }}/simple-conventional-release:latest
-            ghcr.io/${{ github.repository_owner }}/simple-conventional-release:${{ env.VERSION }}
+            ghcr.io/${{ github.repository_owner }}/simple-conventional-release:${{ env.VERSION_WITHOUT_V }}
           cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/simple-conventional-release:buildcache
           cache-to: type=inline
 
       - name: Image Build Successful
-        run: echo "🚀 Docker image pushed successfully to GHCR with version ${{ env.VERSION }}!"
+        run: echo "🚀 Docker image pushed successfully to GHCR with version ${{ env.VERSION_WITHOUT_V }}!"
