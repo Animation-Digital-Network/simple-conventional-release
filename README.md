@@ -41,11 +41,9 @@ docker pull ghcr.io/animation-digital-network/simple-conventional-release:latest
 #### 🔧 Run it locally:
 ```sh
 docker run --rm \
-  -e CUSTOM_REPOSITORY_PATH=/repo \
-  -e CUSTOM_OUTPUT_PATH=RELEASE_NOTES.md \
   -e CUSTOM_FROM_TAG=v1.0.0 \
   -e CUSTOM_TO_TAG=v1.1.0 \
-  -v $(pwd):/repo \
+  -v $(pwd):/app/repository \
   ghcr.io/animation-digital-network/simple-conventional-release
 ```
 
@@ -54,22 +52,27 @@ docker run --rm \
 ```yaml
 jobs:
   release-notes:
+    name: Generate Release Notes
     runs-on: ubuntu-latest
+    env:
+      GIT_DEPTH: 0
+      CUSTOM_WITH_TITLE: "false"
+    container:
+      image: ghcr.io/animation-digital-network/simple-conventional-release:latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Generate Release Notes
-        env:
-          CUSTOM_OUTPUT_PATH: RELEASE_NOTES.md
-          CUSTOM_WITH_TITLE: "false"
+      - name: Run simple-conventional-release
         run: |
           echo "Running simple-conventional-release..."
 
       - name: Upload Release Notes
         uses: actions/upload-artifact@v4
         with:
-          name: release-notes
+          name: RELEASE_NOTES
           path: RELEASE_NOTES.md
 ```
 
@@ -79,7 +82,7 @@ jobs:
 release-notes:
   image: ghcr.io/animation-digital-network/simple-conventional-release:latest
   variables:
-    CUSTOM_OUTPUT_PATH: "RELEASE_NOTES.md"
+    GIT_DEPTH: 0
     CUSTOM_WITH_TITLE: "false"
   script:
     - echo "Running simple-conventional-release..."
