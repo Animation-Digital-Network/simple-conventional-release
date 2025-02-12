@@ -1,11 +1,13 @@
 {
   "name": "simple-conventional-release",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "Simple automated release notes generator for Git repositories using Conventional Commits",
   "keywords": [
     "gitlab",
+    "github",
     "automated",
-    "release"
+    "release",
+    "cli"
   ],
   "homepage": "https://github.com/animation-digital-Network/simple-conventional-release#readme",
   "bugs": {
