@@ -19,13 +19,13 @@
   },
   "license": "AGPL-3.0",
   "author": "ADN Team",
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
+  "main": "dist/src/main.js",
+  "types": "dist/src/main.d.ts",
   "files": [
     "dist/**/*"
   ],
   "bin": {
-    "simple-conventional-release": "./dist/cli.js"
+    "simple-conventional-release": "./dist/src/cli.js"
   },
   "scripts": {
     "build": "rm -rf ./dist && tsc -p tsconfig.build.json",
