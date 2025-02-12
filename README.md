@@ -13,83 +13,38 @@ Supports **GitHub & GitLab** and integrates seamlessly with **CI/CD pipelines**.
 ✅ **Automated Release Notes** – Generates a release note markdown file based on commit messages.<br>
 ✅ **Supports Conventional Commits** – Categorizes commits into features, fixes, chores, etc.<br>
 ✅ **GitHub & GitLab Compatible** – Generates correct compare links based on the repository host.<br>
-✅ **Use via JavaScript API or Docker**.<br>
+✅ **Use via JavaScript API or CLI**.<br>
 ✅ **Ideal for CI/CD pipelines**.<br>
 
 ## 📦 Installation & Usage
 
-### 🐳 Using Docker
+### 📀 Using the CLI
 
-You can use the **Docker image** to generate release notes in **CI/CD pipelines** or locally.
+You can use the **CLI** via `npx` without installing the package globally.
 
-Environnement variables are optional, the tool will try to detect the repository path and latest tags automatically but you can override them if needed using the following variables:
-
-| Variable                | Description                                  | Default                    |
-|-------------------------|----------------------------------------------|----------------------------|
-| `CUSTOM_REPOSITORY_PATH` | Path to the Git repository                  | `.`                        |
-| `CUSTOM_OUTPUT_PATH`     | Path to save the release notes               | `RELEASE_NOTES.md`         |
-| `CUSTOM_FROM_TAG`        | Starting tag for the release notes generation | *Auto-detected*            |
-| `CUSTOM_TO_TAG`          | Ending tag for the release notes generation  | *Latest tag*               |
-| `CUSTOM_WITH_TITLE`      | Include the release title in the output      | `true`                     |
-
-
-#### 🏗 Pull the image:
+#### 🔄 Run via `npx`
 ```sh
-docker pull ghcr.io/animation-digital-network/simple-conventional-release:latest
+npx simple-conventional-release --repository . --output RELEASE_NOTES.md --from v1.0.0 --to v1.1.0
 ```
 
-#### 🔧 Run it locally:
+#### 🏦 Install Globally
 ```sh
-docker run --rm \
-  -e CUSTOM_FROM_TAG=v1.0.0 \
-  -e CUSTOM_TO_TAG=v1.1.0 \
-  -v $(pwd):/app/repository \
-  ghcr.io/animation-digital-network/simple-conventional-release
+npm install -g simple-conventional-release
 ```
 
-#### 🚀 Example with GitHub Actions:
-
-```yaml
-jobs:
-  release-notes:
-    name: Generate Release Notes
-    runs-on: ubuntu-latest
-    env:
-      GIT_DEPTH: 0
-      CUSTOM_WITH_TITLE: "false"
-    container:
-      image: ghcr.io/animation-digital-network/simple-conventional-release:latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Run simple-conventional-release
-        run: |
-          echo "Running simple-conventional-release..."
-
-      - name: Upload Release Notes
-        uses: actions/upload-artifact@v4
-        with:
-          name: RELEASE_NOTES
-          path: RELEASE_NOTES.md
+#### 🚀 Usage
+```sh
+simple-conventional-release --repository . --output RELEASE_NOTES.md --from v1.0.0 --to v1.1.0
 ```
 
-#### 🚀 Example with Gitlab CI/CD:
-
-```yaml
-release-notes:
-  image: ghcr.io/animation-digital-network/simple-conventional-release:latest
-  variables:
-    GIT_DEPTH: 0
-    CUSTOM_WITH_TITLE: "false"
-  script:
-    - echo "Running simple-conventional-release..."
-  artifacts:
-    paths:
-      - RELEASE_NOTES.md
-```
+#### 🔧 Available Options
+| Option                | Description                                      | Default |
+|-----------------------|--------------------------------------------------|---------|
+| `-r, --repository`    | Path to the Git repository                      | `.`     |
+| `-o, --output`        | Output file for release notes                   | `RELEASE_NOTES.md` |
+| `--from`              | Starting tag for release notes generation       | *Auto-detected* |
+| `--to`                | Ending tag for release notes generation         | *Latest tag* |
+| `--with-title`        | Include title in the output (`true` or `false`) | `true`  |
 
 ### 📜 Using the JavaScript API
 
