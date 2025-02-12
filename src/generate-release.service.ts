@@ -87,7 +87,7 @@ export async function getTagDate(git: SimpleGit, tag: string): Promise<string> {
 /**
  * Categorize commits based on Conventional Commits and return formatted sections.
  */
-export function categorizeCommits(logs: LogResult): CommitSections {
+export function categorizeCommits(logs: LogResult, toTag: string): CommitSections {
   const sections: CommitSections = {
     [CommitCategory.BREAKING_CHANGES]: [],
     [CommitCategory.FEATURES]: [],
@@ -118,7 +118,7 @@ export function categorizeCommits(logs: LogResult): CommitSections {
       const shortHash = hash ? hash.substring(0, 7) : ''; // Get first 7 chars of hash
       const commitUrl = ciProjectUrl ? `${ciProjectUrl}/commit/${hash}` : `#${hash}`;
       const authorUrl = ciProjectUrl
-        ? `${ciProjectUrl}/commits?author=${authorEmail}`
+        ? `${ciProjectUrl}/commits/${toTag}?author=${authorEmail}`
         : `#${authorEmail}`;
 
       let breakingChange: string | undefined;
@@ -236,7 +236,7 @@ export async function generateReleaseNotes(config: GenerateConfiguration): Promi
     throw new Error(`No commits found between the specified tags ${JSON.stringify(logParams)} .`);
   }
 
-  const sections = categorizeCommits(logs);
+  const sections = categorizeCommits(logs, logParams.to);
 
   let releaseNotes =
     config.withTitle === true || config.withTitle === undefined

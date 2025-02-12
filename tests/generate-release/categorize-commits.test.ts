@@ -16,7 +16,7 @@ describe('categorizeCommits', () => {
       latest: commit2,
     };
 
-    const sections: CommitSections = categorizeCommits(logs);
+    const sections: CommitSections = categorizeCommits(logs, 'v1.0.0');
 
     expect(sections[CommitCategory.FEATURES]).toEqual([
       `- Add dark mode ([\`${commit1.hash.substring(0, 7)}\`](#${commit1.hash})) [@${commit1.author_name}](#${commit1.author_email})`,
@@ -34,7 +34,7 @@ describe('categorizeCommits', () => {
       latest: commit2,
     };
 
-    const sections: CommitSections = categorizeCommits(logs);
+    const sections: CommitSections = categorizeCommits(logs, 'v1.0.0');
 
     expect(sections[CommitCategory.BUG_FIXES]).toEqual([
       `- Resolve memory leak ([\`${commit1.hash.substring(0, 7)}\`](#${commit1.hash})) [@${commit1.author_name}](#${commit1.author_email})`,
@@ -49,7 +49,7 @@ describe('categorizeCommits', () => {
       latest: null,
     };
 
-    const sections: CommitSections = categorizeCommits(logs);
+    const sections: CommitSections = categorizeCommits(logs, 'v1.0.0');
 
     // Expect all categories to be empty
     Object.values(sections).forEach((category) => {
@@ -71,7 +71,7 @@ describe('categorizeCommits', () => {
       latest: commit2,
     };
 
-    const sections: CommitSections = categorizeCommits(logs);
+    const sections: CommitSections = categorizeCommits(logs, 'v1.0.0');
 
     expect(sections[CommitCategory.UNSPECIFIED]).toEqual([
       `- Refactored codebase for better readability ([\`${commit1.hash.substring(0, 7)}\`](#${commit1.hash})) [@${commit1.author_name}](#${commit1.author_email})`,
@@ -93,7 +93,7 @@ describe('categorizeCommits', () => {
       latest: commit,
     };
 
-    const sections: CommitSections = categorizeCommits(logs);
+    const sections: CommitSections = categorizeCommits(logs, 'v1.0.0');
 
     expect(sections[CommitCategory.FEATURES]).toEqual([
       `- **core** Introduce new API ([\`${commit.hash.substring(0, 7)}\`](#${commit.hash})) [@${commit.author_name}](#${commit.author_email})`,
@@ -124,7 +124,7 @@ describe('categorizeCommits', () => {
       latest: commit,
     };
 
-    const sections: CommitSections = categorizeCommits(logs);
+    const sections: CommitSections = categorizeCommits(logs, 'v1.0.0');
 
     expect(sections[CommitCategory.FEATURES]).toEqual([
       `- **core** Introduce new API ([\`${commit.hash.substring(0, 7)}\`](#${commit.hash})) [@${commit.author_name}](#${commit.author_email})`,
@@ -155,7 +155,7 @@ describe('categorizeCommits', () => {
       latest: commit,
     };
 
-    const sections: CommitSections = categorizeCommits(logs);
+    const sections: CommitSections = categorizeCommits(logs, 'v1.0.0');
 
     expect(sections[CommitCategory.FEATURES]).toEqual([
       `- Introduce new API ([\`${commit.hash.substring(0, 7)}\`](#${commit.hash})) [@${commit.author_name}](#${commit.author_email})`,
@@ -175,7 +175,7 @@ describe('categorizeCommits', () => {
       latest: commit,
     };
 
-    const sections: CommitSections = categorizeCommits(logs);
+    const sections: CommitSections = categorizeCommits(logs, 'v1.0.0');
 
     expect(sections[CommitCategory.BREAKING_CHANGES]).toEqual([
       `- **core** Introduce new API ([\`${commit.hash.substring(0, 7)}\`](#${commit.hash})) [@${commit.author_name}](#${commit.author_email})`,
@@ -195,7 +195,7 @@ describe('categorizeCommits', () => {
       latest: commit,
     };
 
-    const sections = categorizeCommits(logs);
+    const sections = categorizeCommits(logs, 'v1.0.0');
     expect(sections[CommitCategory.FEATURES]).toEqual([
       `- Add extra spacing issue ([\`${commit.hash.substring(0, 7)}\`](#${commit.hash})) [@${commit.author_name}](#${commit.author_email})`,
     ]);
@@ -211,7 +211,7 @@ describe('categorizeCommits', () => {
       latest: commit2,
     };
 
-    const sections = categorizeCommits(logs);
+    const sections = categorizeCommits(logs, 'v1.0.0');
     expect(sections[CommitCategory.UNSPECIFIED]).toEqual([
       `- FeAt: New feature ([\`${commit1.hash.substring(0, 7)}\`](#${commit1.hash})) [@${commit1.author_name}](#${commit1.author_email})`,
       `- FIX: Critical fix ([\`${commit2.hash.substring(0, 7)}\`](#${commit2.hash})) [@${commit2.author_name}](#${commit2.author_email})`,
@@ -227,7 +227,7 @@ describe('categorizeCommits', () => {
       latest: commit,
     };
 
-    const sections = categorizeCommits(logs);
+    const sections = categorizeCommits(logs, 'v1.0.0');
     expect(sections[CommitCategory.FEATURES]).toEqual([
       `- **user-auth** Improve login flow ([\`${commit.hash.substring(0, 7)}\`](#${commit.hash})) [@${commit.author_name}](#${commit.author_email})`,
     ]);
@@ -243,7 +243,7 @@ describe('categorizeCommits', () => {
       latest: commit2,
     };
 
-    const sections = categorizeCommits(logs);
+    const sections = categorizeCommits(logs, 'v1.0.0');
     expect(sections[CommitCategory.FEATURES]).toEqual([
       `- no description ([\`${commit1.hash.substring(0, 7)}\`](#${commit1.hash})) [@${commit1.author_name}](#${commit1.author_email})`,
     ]);
@@ -261,7 +261,7 @@ describe('categorizeCommits', () => {
       latest: commit,
     };
 
-    const sections = categorizeCommits(logs);
+    const sections = categorizeCommits(logs, 'v1.0.0');
     expect(sections[CommitCategory.UNSPECIFIED]).toEqual([
       `- unknown: This should not be categorized ([\`${commit.hash.substring(0, 7)}\`](#${commit.hash})) [@${commit.author_name}](#${commit.author_email})`,
     ]);
